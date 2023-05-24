@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 export default function Note(props) {
     const [note, setNote] = React.useState({
-        title: props.title ,
-        content: props.content,
+        name: props.name ,
+        description: props.description,
         id: props.id
     });
     function handleDelte() {
@@ -21,7 +21,7 @@ export default function Note(props) {
       setNote(prevNote => {
           return {
               ...prevNote,
-              title: title
+              name: title
           };
       }
       );
@@ -30,7 +30,7 @@ export default function Note(props) {
         setNote(prevNote => {
             return {
                 ...prevNote,
-                content: content
+                description: content
             };
         }
         );
@@ -47,7 +47,7 @@ export default function Note(props) {
                     placeholder="Title" 
                     textAlignVertical="top"
                     textAlign="left"
-                    value={note.title}
+                    value={note.name}
                     onChangeText={handleTitleChange}
               />
               <TouchableOpacity
@@ -65,7 +65,7 @@ export default function Note(props) {
                       numberOfLines={2}
                       textAlignVertical="top"
                       textAlign="left"
-                      value={note.content}
+                      value={note.description}
                       onChangeText={handleContentChange}
                       />
                 <TouchableOpacity

@@ -12,15 +12,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default function CreateArea(props) {
     const [note, setNote] = React.useState({
-        title: "",
-        content: "",
+        name: "",
+        description: "",
         id: uuidv4()
     });
     function handleTitleChange(title) {
         setNote(prevNote => {
             return {
                 ...prevNote,
-                title: title
+                name: title
             };
         }
         );
@@ -29,7 +29,7 @@ export default function CreateArea(props) {
         setNote(prevNote => {
             return {
                 ...prevNote,
-                content: content
+                description: content
             };
         }
         );
@@ -38,8 +38,8 @@ export default function CreateArea(props) {
     function submit(event) {
         props.onAdd(note);
         setNote({
-            title: "",
-            content: "",
+            name: "",
+            description: "",
             id: uuidv4()
         });
         event.preventDefault();
@@ -51,9 +51,8 @@ export default function CreateArea(props) {
                     placeholder="Title" 
                     textAlignVertical="top"
                     textAlign="left"
-                    name = "title"
                     onChangeText={handleTitleChange}
-                    value = {note.title}
+                    value = {note.name}
               />
               </View>
               <View style = {styles.viewTitle}>
@@ -65,7 +64,7 @@ export default function CreateArea(props) {
                       textAlign="left"
                       name = "content"
                       onChangeText = {handleContentChange}
-                      value = {note.content}
+                      value = {note.description}
                       />
                 <TouchableOpacity
                     style={styles.addButton}
