@@ -8,52 +8,89 @@
 import React from 'react';
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
+import CreateArea from './CreateArea';
+import Note from './Note';
+import { Amplify } from 'aws-amplify';
+import awsExports from './src/aws-exports';
+Amplify.configure(awsExports);
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-export function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+export default function App() {
+  const [notes, setNotes] = React.useState([]);
+  function addNote(newNote) {
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
+    });
+  }
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem) => {
+        return noteItem.id !== id;
+      });
+    });
+  }
+  function updateNote(note) {
+    const newNotes = notes.filter((noteItem) => {
+      return noteItem.id !== note.id;
+    });
+    setNotes([...newNotes, note]);
+  }
+  async function createNewItem() {
+    const todo = { name: "My first todo", description: "Hello world!" };
+    try {
+      await API.graphql(graphqlOperation(createTodo, { input: todo }));
+      console.log('item created!');
+    } catch (err) {
+      console.log('error creating todo:', err);
+    }
+  }
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <Text>Teste</Text>
+    <SafeAreaView>
+      <View style = {styles.viewMain}>
+        <CreateArea onAdd={addNote}/>
+        <Text style= {styles.textStyle}>Tasks</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={createNewItem}
+          >
+          <Text style={styles.buttonTextStyle}>Test</Text>
+        </TouchableOpacity>
+
+        <FlatList
+              contentContainerStyle={styles.contentContainer}
+              horizontal={false}
+              data={notes}
+              renderItem={(item) => 
+              <Note 
+              title= {item.item.title} 
+              content = {item.item.content}   
+              id = {item.item.id}   
+              deleteNote = {deleteNote}  
+              updateNote = {updateNote}
+              />}
+            />
+      </View>
     </SafeAreaView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  viewMain : {
+    backgroundColor: '#eee',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  textStyle : {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
   },
 });
 
